@@ -11,8 +11,9 @@ class DoomScroll:
         self.screen_after = "/sdcard/screen_after.png"
 
     def swipe_down(self):
-        subprocess.run(["adb", "shell", "input", "swipe", "500", "1200", "500", "400", "50"])
+        subprocess.run(["adb", "shell", "input", "swipe", "500", "2000", "500", "0", "1000"])
         print("***swiping down***\n")
+        time.sleep(1.5)
 
     def tap_button(self, x, y):
         subprocess.run(["adb", "shell", "input", "tap", str(x), str(y)])
@@ -22,10 +23,10 @@ class DoomScroll:
     def reset_app(self):
         print("***resetting app***")
         self.tap_button(567,48)
-        time.sleep(2)
+        time.sleep(1.5)
         self.tap_button(310,880)
         print("***reset completed***")
-        time.sleep(2)
+        time.sleep(1)
 
     def images_are_similar(self, img1_path, img2_path, threshold=5000):
         img1 = Image.open(img1_path)
@@ -47,21 +48,16 @@ class DoomScroll:
     def doomscroll_behavior(self):
         while True:
             self.swipe_down()
-            time.sleep(1.5)
 
             subprocess.run(["adb", "shell", "screencap", "-p", self.screen_before])
             subprocess.run(["adb", "pull", self.screen_before, "screen_before.png"])
 
             self.tap_button(1022, 1871)
-            time.sleep(2)
 
             self.swipe_down()
-            time.sleep(1.5)
 
             subprocess.run(["adb", "shell", "screencap", "-p", self.screen_after])
             subprocess.run(["adb", "pull", self.screen_after, "screen_after.png"])
-
-            time.sleep(1)
 
             if self.images_are_similar("screen_before.png", "screen_after.png"):
                 self.unchanged_count += 1
